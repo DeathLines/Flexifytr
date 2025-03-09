@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün Bilgisi Gönder</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Genel Stil */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 24px;
+        }
+
+        /* Form Alanları */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        /* Butonlar */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:last-child {
+            background-color: #007BFF;
+        }
+
+        button:last-child:hover {
+            background-color: #0056b3;
+        }
+
+        /* Yanıt Alanı */
+        .response {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Key Üret ve Key Süresi Menüsü */
+        .key-menu {
+            display: none;
+            background-color: #f4f7fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Medya Sorguları (Responsive Tasarım) */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Zarasify</h2>
+
+        <label for="key">Kullanıcı Keyi:</label>
+        <input type="text" id="key" placeholder="Kullanıcı keyini girin" required>
+
+        <label for="product-link">Ürün Linki:</label>
+        <input type="url" id="product-link" placeholder="Ürün linkini girin" required>
+
+        <label for="size">Ürün Bedeni:</label>
+        <input type="text" id="size" placeholder="Ürün bedeni girin" required>
+
+        <label for="mail">İletişim Maili:</label>
+        <input type="text" id="mail" placeholder="Mailinizi girin" required>
+
+        <button onclick="sendData()">Verileri Gönder</button>
+        <button onclick="toggleKeyMenu()">Key Üret ve Süre Ayarla</button>
+
+        <div class="key-menu">
+            <label for="L_key">Key Süresi:</label>
+            <input type="text" id="L_key" placeholder="Key Süresi" required>
+            <button onclick="generateKey()">Key Üret</button>
+        </div>
+
+        <div class="response"></div>
+    </div>
+
+    <script>
+        // Ürün bedeni girildiğinde tüm harfleri uppercase yap
+        document.getElementById('size').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+
+        // Link validasyonu (sadece Zara linkleri)
+        document.getElementById('product-link').addEventListener('input', function() {
+            const url = this.value;
+            if (!url.startsWith('https://www.zara.com')) {
+                this.setCustomValidity('Lütfen sadece https://www.zara.com linki girin');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Mail doğrulaması ( içinde "@" karakteri olmalı)
+        document.getElementById('mail').addEventListener('input', function() {
+            const email = this.value;
+            if (!email.includes('@')) {
+                this.setCustomValidity('Lütfen geçerli bir mail adresi girin.');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        function sendData() {
+            // Input değerlerini al
+            const key = document.getElementById('key').value;
+            const productLink = document.getElementById('product-link').value;
+            const size = document.getElementById('size').value;
+            const mail = document.getElementById('mail').value;
+
+            // API'ye gönderilecek veri
+            const data = {
+                product_link: productLink,
+                size: size,
+                mail: mail
+            };
+
+            // Link ve Mail doğrulama
+            if (!productLink.startsWith('https://www.zara.com')) {
+                alert('Lütfen sadece https://www.zara.com linki girin');
+                return;
+            }
+
+            if (!mail.includes('@')) {
+                alert('Lütfen geçerli bir mail adresi girin.');
+                return;
+            }
+
+            // API endpoint URL (örnek olarak "https://example.com/api/product" kullanıyoruz)
+            const apiUrl = 'http://localhost:5000/check';
+
+            // API'ye POST isteği gönder
+            $.ajax({
+                url: apiUrl,
+                type: 'POST',
+                contentType: 'application/json',
+                headers: {
+                    "key": key
+                },
+                data: JSON.stringify(data),
+                success: function(response) {
+                    // Başarılı yanıt alındığında
+                    document.querySelector('.response').innerHTML = 'Başarıyla gönderildi! Yanıt: ' + JSON.stringify(response);
+                },
+                error: function(error) {
+                    // Hata durumunda
+                    document.querySelector('.response').innerHTML = 'Kullandığınız key geçersizdir. Lütfen yeni bir key satın alınız.';
+                }
+            });
+        }
+
+        function generateKey() {
+            // Input değerlerini al
+            const key = document.getElementById('L_key').value;
+
+            // API endpoint URL
+            const apiUrl = 'http://localhost:5000/gl-key';
+            const data = {
+                key: 'GENERATE_KEY',
+                L_key: key
+            };
+
+            // API'ye POST isteği gönder
+            $.ajax({
+                url: apiUrl,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    // Başarılı yanıt alındığında
+                    document.querySelector('.response').innerHTML = 'Başarıyla gönderildi! Yanıt: ' + JSON.stringify(response);
+                },
+                error: function(error) {
+                    // Hata durumunda
+                    document.querySelector('.response').innerHTML = 'Bir hata oluştu: ' + JSON.stringify(error);
+                }
+            });
+        }
+
+        // Key üret ve key süresi menüsünü göster
+        function toggleKeyMenu() {
+            const keyMenu = document.querySelector('.key-menu');
+            keyMenu.style.display = keyMenu.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+
+</body>
+</html>
