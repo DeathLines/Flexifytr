@@ -212,24 +212,23 @@
             // API endpoint URL (örnek olarak "https://example.com/api/product" kullanıyoruz)
             const apiUrl = 'https://82.153.241.164/check';
 
-            // API'ye POST isteği gönder
-            $.ajax({
-                url: apiUrl,
-                type: 'POST',
-                contentType: 'application/json',
-                enctype: 'multipart/form-data',
+            // Fetch API kullanarak POST isteği gönder
+            fetch(apiUrl, {
+                method: 'POST',
                 headers: {
-                    "key": key
+                    'Content-Type': 'application/json',
+                    'key': key
                 },
-                data: JSON.stringify(data),
-                success: function(response) {
-                    // Başarılı yanıt alındığında
-                    document.querySelector('.response').innerHTML = 'Başarıyla gönderildi! Yanıt: ' + JSON.stringify(response);
-                },
-                error: function(error) {
-                    // Hata durumunda
-                    document.querySelector('.response').innerHTML = 'Kullandığınız key geçersizdir. Lütfen yeni bir key satın alınız.';
-                }
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Başarılı yanıt alındığında
+                document.querySelector('.response').innerHTML = 'Başarıyla gönderildi! Yanıt: ' + JSON.stringify(data);
+            })
+            .catch(error => {
+                // Hata durumunda
+                document.querySelector('.response').innerHTML = 'Kullandığınız key geçersizdir. Lütfen yeni bir key satın alınız.';
             });
         }
 
@@ -244,21 +243,22 @@
                 L_key: key
             };
 
-            // API'ye POST isteği gönder
-            $.ajax({
-                url: apiUrl,
-                type: 'POST',
-                contentType: 'application/json',
-                enctype: 'multipart/form-data',
-                data: JSON.stringify(data),
-                success: function(response) {
-                    // Başarılı yanıt alındığında
-                    document.querySelector('.response').innerHTML = 'Başarıyla gönderildi! Yanıt: ' + JSON.stringify(response);
+            // Fetch API kullanarak POST isteği gönder
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                error: function(error) {
-                    // Hata durumunda
-                    document.querySelector('.response').innerHTML = 'Bir hata oluştu: ' + JSON.stringify(error);
-                }
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Başarılı yanıt alındığında
+                document.querySelector('.response').innerHTML = 'Başarıyla gönderildi! Yanıt: ' + JSON.stringify(data);
+            })
+            .catch(error => {
+                // Hata durumunda
+                document.querySelector('.response').innerHTML = 'Bir hata oluştu: ' + JSON.stringify(error);
             });
         }
 
