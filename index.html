@@ -198,25 +198,25 @@
             }
 
             // API endpoint URL (örnek olarak "https://example.com/api/product" kullanıyoruz)
-            const apiUrl = 'https://82.153.241.164/check';
+            const apiUrl = 'http://82.153.241.164:5000/check';
 
-            // Fetch API kullanarak POST isteği gönder
-            fetch(apiUrl, {
-                method: 'POST',
+            // API'ye POST isteği gönder
+            $.ajax({
+                url: apiUrl,
+                type: 'POST',
+                contentType: 'application/json',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'key': key
+                    "key": key
                 },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Başarılı yanıt alındığında
-                document.querySelector('.response').innerHTML = 'Başarıyla gönderildi! Yanıt: ' + JSON.stringify(data);
-            })
-            .catch(error => {
-                // Hata durumunda
-                document.querySelector('.response').innerHTML = 'Kullandığınız key geçersizdir. Lütfen yeni bir key satın alınız.';
+                data: JSON.stringify(data),
+                success: function(response) {
+                    // Başarılı yanıt alındığında
+                    document.querySelector('.response').innerHTML = 'Başarıyla gönderildi! Yanıt: ' + JSON.stringify(response);
+                },
+                error: function(error) {
+                    // Hata durumunda
+                    document.querySelector('.response').innerHTML = 'Kullandığınız key geçersizdir. Lütfen yeni bir key satın alınız.';
+                }
             });
         }
 
@@ -225,28 +225,26 @@
             const key = document.getElementById('L_key').value;
 
             // API endpoint URL
-            const apiUrl = 'https://82.153.241.164/gl-key';
+            const apiUrl = 'http://82.153.241.164:5000/gl-key';
             const data = {
                 key: 'GENERATE_KEY',
                 L_key: key
             };
 
-            // Fetch API kullanarak POST isteği gönder
-            fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+            // API'ye POST isteği gönder
+            $.ajax({
+                url: apiUrl,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    // Başarılı yanıt alındığında
+                    document.querySelector('.response').innerHTML = 'Başarıyla gönderildi! Yanıt: ' + JSON.stringify(response);
                 },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Başarılı yanıt alındığında
-                document.querySelector('.response').innerHTML = 'Başarıyla gönderildi! Yanıt: ' + JSON.stringify(data);
-            })
-            .catch(error => {
-                // Hata durumunda
-                document.querySelector('.response').innerHTML = 'Bir hata oluştu: ' + JSON.stringify(error);
+                error: function(error) {
+                    // Hata durumunda
+                    document.querySelector('.response').innerHTML = 'Bir hata oluştu: ' + JSON.stringify(error);
+                }
             });
         }
 
